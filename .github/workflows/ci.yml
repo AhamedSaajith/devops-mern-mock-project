@@ -33,7 +33,7 @@ jobs:
           npm install
           echo "Listing backend files:"
           ls -la
-          node seedTaskData.js  
+          node seedTasksData.js  
 
   test:
     runs-on: ubuntu-latest
