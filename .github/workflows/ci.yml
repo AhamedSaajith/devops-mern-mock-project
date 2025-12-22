@@ -10,30 +10,29 @@ jobs:
     
     services:
       mongo:
-        image: mongo
-        ports: ['27017:27017']  
-        
+        image: mongo:6.0
+        ports: ['27017:27017']
+        options: >-
+          --health-cmd "mongosh --eval 'db.runCommand({ ping: 1 })'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
           
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-            
-      - name: Waiting for MongoDB to be ready
-        run: |
-          until nc -z localhost 27017; do
-            echo "Waiting for MongoDB..."  
-            sleep 2
-          done
-          echo "MongoDB is up"
-              
+
       - name: Seed MongoDB
         working-directory: ./backend
         run: |
           npm install
+          echo "Listing backend files:"
+          ls -la
           node seedTaskData.js  
 
   test:
@@ -42,7 +41,7 @@ jobs:
       
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
